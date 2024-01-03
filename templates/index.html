@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulario</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <form>
+          <div class="mb-3">
+            <label for="url-input" class="form-label">URL</label>
+            <input type="text" class="form-control" id="url-input" name="url" placeholder="Ingrese la URL" pattern="" required>
+            <div class="invalid-feedback">
+              La URL ingresada no es válida.
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="email-input" class="form-label">Correo electrónico</label>
+            <input type="email" class="form-control" id="email-input" name="email" placeholder="Ingrese su correo electrónico" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" required>
+            <div class="invalid-feedback">
+              El correo electrónico ingresado no es válido.
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Guardar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
