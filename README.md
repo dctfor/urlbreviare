@@ -1,4 +1,4 @@
-# GCP_Flask_Firebase
+# UrlBreviare
 
 This is a simple API CRUD in FLASK + Firebase Demo
 
@@ -12,17 +12,32 @@ This is a simple API CRUD in FLASK + Firebase Demo
     - The project implements different Flask plugins as Talisman, Login and Limiter
     - The generated short URL comes now with a QR created with pillow
 
-## Somehow a downside
+## Pending ideas
     Currently I'm not implementing JWT as currently for being such a small project, this can work using Flask-login + CSRF Tokens
     No need for a more complex implementation for this demo.
 
-### TODO
+### TODOs
     - Add example code for using Sendgrid by Twilio for validating emails validating format and validating 'A' and 'MX' DNS records
     - Add unittesting with pytest into the yaml file
     - Add Telegram realtime notifications
     - Add examples for APIs usage / flask-apispec other than the site-map
     - Add SSO/OAuth capabilities
 
-## Created this demo for getting hired
 
-Last Update 2024 Sep 19
+# Desarrollo
+
+## Configuración del Entorno
+
+1. **Crear y Activar un Entorno Virtual:**
+    ```bash
+    python -m venv env
+    source env/bin/activate  # En Windows: env\Scripts\activate
+    ```
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+    ```bash
+    pre-commit install
+    ```

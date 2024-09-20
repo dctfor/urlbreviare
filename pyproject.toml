@@ -1,0 +1,20 @@
+[tool.black]
+line-length = 120
+target-version = ['py311']  # Reemplaza con tu versión de Python
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.venv
+  | \.mypy_cache
+  | \.pytest_cache
+  | \.tox
+  | __pycache__
+  | migrations
+  | tests
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 120

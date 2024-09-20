@@ -1,0 +1,37 @@
+[flake8]
+# Ignorar reglas incompatibles con 'black'
+ignore = E203, W503, W504
+
+# Establecer la longitud máxima de línea
+max-line-length = 120
+
+# Establecer la complejidad ciclómica máxima
+max-complexity = 15
+
+# Directorios y archivos a excluir
+exclude =
+    __init__.py,
+    .git,
+    __pycache__,
+    */update_fsebt_insurance.py,
+    migrations/,
+    tests/,
+    env/,
+    venv/,
+
+# Configuración para flake8-docstrings
+docstring-convention = google
+
+# Plugins adicionales
+# flake8-bugbear
+select = C,E,F,W,B,B950
+
+# flake8-comprehensions
+extend-select = C4
+
+# flake8-quotes
+inline-quotes = single
+docstring-quotes = double
+
+# flake8-isort
+isort-config = pyproject.toml
