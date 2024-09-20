@@ -1,6 +1,6 @@
 # UrlBreviare
 
-This is a simple API CRUD in FLASK + Firebase Demo
+This is a simple API CRUD in FLASK + Firebase + GCP CI/CD Demo 
 
 ## The highlights are:
     - It was a quickly developed project/setup for showing base skills for developing
@@ -22,6 +22,7 @@ This is a simple API CRUD in FLASK + Firebase Demo
     - Add Telegram realtime notifications
     - Add examples for APIs usage / flask-apispec other than the site-map
     - Add SSO/OAuth capabilities
+    - Consider adding the session time-limit for security
 
 
 # Desarrollo
@@ -36,6 +37,10 @@ This is a simple API CRUD in FLASK + Firebase Demo
 
     ```bash
     pip install -r requirements.txt
+    ```
+
+    ```bash
+    pip install -r dev-requirements.txt
     ```
 
     ```bash
