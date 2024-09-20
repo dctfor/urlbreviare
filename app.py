@@ -11,13 +11,7 @@ from flask import Flask, abort, jsonify, redirect, render_template, request, sen
 from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from flask_login import (
-    LoginManager,
-    UserMixin,
-    login_required,
-    login_user,
-    logout_user,
-)
+from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user
 from flask_talisman import Talisman
 from flask_wtf import CSRFProtect
 from flask_wtf.csrf import ValidationError
@@ -74,11 +68,35 @@ csrf = CSRFProtect(app)
 csp = {
     "default-src": [
         "'self'",
+    ],
+    "script-src": [
+        "'self'",
         "https://cdn.jsdelivr.net",
-    ]
+        "https://cdnjs.cloudflare.com",
+    ],
+    "style-src": [
+        "'self'",
+        "https://cdn.jsdelivr.net",
+        "https://cdnjs.cloudflare.com",
+        "'unsafe-inline'",  # Necessary if you include inline styles or styles from JS libraries
+    ],
+    "font-src": [
+        "'self'",
+        "https://cdn.jsdelivr.net",
+    ],
+    "img-src": [
+        "'self'",
+        "data:",
+    ],
 }
 
-talisman = Talisman(app, content_security_policy=csp)
+
+# Inicializar Flask-Talisman con la configuración CSP y habilitar nonces para scripts
+talisman = Talisman(
+    app,
+    content_security_policy=csp,
+    content_security_policy_nonce_in=["script-src"],
+)
 
 
 class URLSchema(Schema):
@@ -121,9 +139,7 @@ def load_user(user_id):
     user_doc = db.collection("users").document(user_id).get()
     if user_doc.exists:
         data = user_doc.to_dict()
-        return User(
-            id=user_id, username=data["username"], password_hash=data["password_hash"]
-        )
+        return User(id=user_id, username=data["username"], password_hash=data["password_hash"])
     return None
 
 
@@ -144,9 +160,7 @@ def crear_usuario(username, password):
     password_hash = generate_password_hash(password)
 
     # Crear el documento de usuario
-    users_ref.document(user_id).set(
-        {"username": username, "password_hash": password_hash}
-    )
+    users_ref.document(user_id).set({"username": username, "password_hash": password_hash})
 
     return True, user_id
 
@@ -160,9 +174,7 @@ def obtener_usuario_por_username(username):
     if query:
         doc = query[0]
         data = doc.to_dict()
-        return User(
-            id=doc.id, username=data["username"], password_hash=data["password_hash"]
-        )
+        return User(id=doc.id, username=data["username"], password_hash=data["password_hash"])
     return None
 
 
@@ -173,9 +185,7 @@ def obtener_usuario_por_id(user_id):
     user_doc = db.collection("users").document(user_id).get()
     if user_doc.exists:
         data = user_doc.to_dict()
-        return User(
-            id=user_id, username=data["username"], password_hash=data["password_hash"]
-        )
+        return User(id=user_id, username=data["username"], password_hash=data["password_hash"])
     return None
 
 
@@ -236,8 +246,8 @@ def login():
     print(f"login - {request.method}")
     if request.method == "POST":
         # data = request.get_json()
-        username = request.form.get("username")
-        password = request.form.get("password")
+        username = request.form.get("username") or request.get_json().get("username")
+        password = request.form.get("password") or request.get_json().get("password")
         print(f"username: {username}, password: {password}")
         if not username or not password:
             return (
@@ -249,7 +259,8 @@ def login():
         print(user.verify_password(password))
         if user and user.verify_password(password):
             login_user(user)
-            return render_template("index.html")
+            print("render index - redirecting")
+            return jsonify({"message": "Login exitoso"}), 200
         else:
             return (
                 jsonify({"message": "Nombre de usuario o contraseña incorrectos."}),
@@ -432,11 +443,9 @@ def add():
         data = request.get_json()
         validated_data = url_schema.load(data)
         url = validated_data["url"]
-        _validar_url(
-            url
-        )  # Esta función ahora lanza una excepción si la URL es inválida
+        _validar_url(url)  # Esta función ahora lanza una excepción si la URL es inválida
         # url = _agregar_https(url) # No es necesario agregar 'https://' a la URL
-        unique_id = generar_id_con_hash_validado()
+        unique_id = generar_id_con_hash_validado(url, store_db=store_db)
         data["id"] = unique_id
         store_db.document(unique_id).set(data)
         shortened_url = f"{local_fqdn}{unique_id}"
@@ -452,7 +461,9 @@ def add():
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    if request.method == "POST":
+        print("POST")
+    return render_template("index.html", nonce=os.urandom(16).hex())
 
 
 def _validar_url(url):

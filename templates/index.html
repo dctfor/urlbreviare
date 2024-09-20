@@ -1,20 +1,53 @@
-<!-- templates/index.html -->
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Acortador de URLs</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Meta tags for SEO -->
+    <meta name="description" content="Acortador de URLs gratuito y fácil de usar.">
+    <meta name="keywords" content="acortador, URL, enlaces, gratuito">
+    <!-- Favicon -->
+    <!-- <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon"> -->
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Optional: Bootstrap Icons -->
+    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Animate.css for animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <!-- Custom CSS -->
+    <style>
+        body {
+            padding-top: 70px; /* Space for fixed navbar */
+        }
+        .dark-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
+        .dark-mode .card {
+            background-color: #1e1e1e;
+        }
+        .dark-mode .navbar, .dark-mode footer {
+            background-color: #1e1e1e;
+        }
+        .dark-mode .form-control {
+            background-color: #1e1e1e;
+            color: #ffffff;
+        }
+        /* Adjust other elements as needed */
+    </style>
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+<body class="d-flex flex-column min-vh-100">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/">URL Shortener by Christian Lopez / Catfor</a>
-            <div class="collapse navbar-collapse">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-link-45deg"></i> URL Shortener
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     {% if current_user.is_authenticated %}
                         <li class="nav-item">
@@ -31,62 +64,95 @@
                             <a class="nav-link" href="/register">Registrar</a>
                         </li>
                     {% endif %}
+                    <!-- Dark Mode Toggle -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="darkModeToggle">
+                            <i class="bi bi-moon"></i>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <div class="container mt-5">
-        <h1 class="text-center mb-4">Acortador de URLs</h1>
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                {% if current_user.is_authenticated %}
-                    <!-- Formulario Bootstrap -->
-                    <form id="urlForm" method="post">
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"> <!-- Campo CSRF oculto -->
-                        <div class="mb-3">
-                            <label for="urlInput" class="form-label">Ingresa la URL que deseas acortar</label>
-                            <input type="url" class="form-control" id="urlInput" placeholder="https://www.ejemplo.com" required>
-                            <div class="invalid-feedback">
-                                Por favor, ingresa una URL válida.
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100 mt-3">Acortar URL</button>
-                    </form>
-                    <!-- Sección para mostrar el resultado -->
-                    <div id="result" class="mt-4 d-none">
-                        <div class="alert alert-success" role="alert">
-                            <p>Tu URL acortada: <a href="#" id="shortUrl" target="_blank"></a></p>
-                            <p>Tu código QR:</p>
-                            <img src="#" id="qrImage" alt="Código QR" class="img-fluid" />
-                            <button class="btn btn-sm btn-outline-secondary mt-2" id="copyButton">
-                                <i class="bi bi-clipboard"></i> Copiar URL Acortada
-                            </button>
-                        </div>
-                    </div>
-                    <!-- Sección para mostrar errores -->
-                    <div id="error" class="mt-4 d-none">
-                        <div class="alert alert-danger" role="alert" id="errorMessage">
-                            <!-- Mensaje de error dinámico -->
-                        </div>
-                    </div>
-                    <!-- Spinner de carga -->
-                    <div id="loading" class="mt-4 d-none text-center">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Cargando...</span>
-                        </div>
-                    </div>
-                {% else %}
-                    <p class="text-center">Por favor, <a href="/login">inicia sesión</a> para acortar URLs.</p>
-                {% endif %}
-            </div>
-        </div>
-    </div>
+    <!-- Main Content -->
+    <main class="flex-fill">
+      <div class="container mt-5 pt-5">
+          <h1 class="text-center mb-4">Acortador de URLs</h1>
+          <div class="row justify-content-center">
+              <div class="col-md-8 col-lg-6">
+                  {% if current_user.is_authenticated %}
+                      <!-- Improved Bootstrap Form -->
+                      <form id="urlForm">
+                          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                          <div class="mb-3">
+                              <label for="urlInput" class="form-label">Ingresa la URL que deseas acortar</label>
+                              <div class="input-group">
+                                  <span class="input-group-text"><i class="bi bi-link-45deg"></i></span>
+                                  <input type="url" class="form-control" id="urlInput" placeholder="https://www.ejemplo.com" required>
+                                  <div class="invalid-feedback">
+                                      Por favor, ingresa una URL válida.
+                                  </div>
+                              </div>
+                          </div>
+                          <button type="submit" class="btn btn-primary w-100 mt-3">Acortar URL</button>
+                      </form>
+                      <!-- Result Section -->
+                      <div id="result" class="mt-4 d-none">
+                          <div class="card animate__animated">
+                              <div class="card-body text-center">
+                                  <h5 class="card-title">¡URL Acortada!</h5>
+                                  <p class="card-text">
+                                      Tu URL acortada es: <a href="#" id="shortUrl" target="_blank"></a>
+                                  </p>
+                                  <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                                      <button class="btn btn-outline-secondary" id="copyButton" data-bs-toggle="tooltip" data-bs-placement="top" title="Copia la URL acortada al portapapeles">
+                                          <i class="bi bi-clipboard"></i> Copiar URL
+                                      </button>
+                                      <a href="#" id="downloadQR" class="btn btn-outline-primary">
+                                          <i class="bi bi-download"></i> Descargar QR
+                                      </a>
+                                  </div>
+                                  <div class="mt-3">
+                                      <img src="#" id="qrImage" alt="Código QR" class="img-fluid" style="max-width: 200px;" />
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <!-- Error Section -->
+                      <div id="error" class="mt-4 d-none">
+                          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                              <i class="bi bi-exclamation-triangle-fill"></i> <span id="errorMessage"></span>
+                              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                          </div>
+                      </div>
+                      <!-- Loading Spinner -->
+                      <div id="loading" class="mt-4 d-none text-center">
+                          <div class="spinner-border text-primary" role="status">
+                              <span class="visually-hidden">Cargando...</span>
+                          </div>
+                      </div>
+                  {% else %}
+                      <div class="alert alert-warning text-center" role="alert">
+                          Por favor, <a href="/login" class="alert-link">inicia sesión</a> para acortar URLs.
+                      </div>
+                  {% endif %}
+              </div>
+          </div>
+      </div>
+    </main>
 
-    <!-- Bootstrap JS y dependencias (Popper) -->
+    <!-- Footer -->
+    <footer class="bg-light text-center text-lg-start mt-5">
+        <div class="text-center p-3">
+            © 2023 URL Shortener by Christian Lopez / Catfor
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <!-- JavaScript personalizado -->
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         document.addEventListener('DOMContentLoaded', function () {
             const form = document.getElementById('urlForm');
             if (form) {
@@ -98,11 +164,13 @@
                 const errorMessage = document.getElementById('errorMessage');
                 const loadingDiv = document.getElementById('loading');
                 const copyButton = document.getElementById('copyButton');
+                const downloadQRButton = document.getElementById('downloadQR');
                 const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+                const darkModeToggle = document.getElementById('darkModeToggle');
 
                 form.addEventListener('submit', async function (e) {
                     e.preventDefault();
-                    // Resetear mensajes
+                    // Reset messages
                     resultDiv.classList.add('d-none');
                     errorDiv.classList.add('d-none');
                     urlInput.classList.remove('is-invalid');
@@ -110,7 +178,7 @@
 
                     const url = urlInput.value.trim();
 
-                    // Validación básica en el cliente
+                    // Basic client-side validation
                     if (!url) {
                         urlInput.classList.add('is-invalid');
                         loadingDiv.classList.add('d-none');
@@ -135,7 +203,16 @@
                             shortUrlLink.textContent = data.shortened_url;
                             qrImage.src = data.qr_url;
                             qrImage.alt = 'Código QR';
+
+                            // Show result with animation
                             resultDiv.classList.remove('d-none');
+                            resultDiv.classList.add('animate__fadeIn');
+
+                            // Initialize tooltips
+                            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                                return new bootstrap.Tooltip(tooltipTriggerEl);
+                            });
                         } else {
                             const errorData = await response.json();
                             throw new Error(errorData.message || 'Ocurrió un error inesperado.');
@@ -147,17 +224,40 @@
                     }
                 });
 
-                // Funcionalidad del botón de copiar
+                // Copy button functionality
                 copyButton.addEventListener('click', function () {
                     const url = shortUrlLink.href;
                     navigator.clipboard.writeText(url).then(() => {
                         copyButton.innerHTML = '<i class="bi bi-check-circle-fill"></i> Copiado';
                         setTimeout(() => {
-                            copyButton.innerHTML = '<i class="bi bi-clipboard"></i> Copiar URL Acortada';
+                            copyButton.innerHTML = '<i class="bi bi-clipboard"></i> Copiar URL';
                         }, 2000);
                     }).catch(err => {
                         console.error('Error al copiar: ', err);
                     });
+                });
+
+                // Download QR code functionality
+                downloadQRButton.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const qrURL = qrImage.src;
+                    const link = document.createElement('a');
+                    link.href = qrURL;
+                    link.download = 'codigo_qr.png';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                });
+
+                // Dark mode toggle functionality
+                darkModeToggle.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.body.classList.toggle('dark-mode');
+                    if (document.body.classList.contains('dark-mode')) {
+                        darkModeToggle.innerHTML = '<i class="bi bi-brightness-high"></i>';
+                    } else {
+                        darkModeToggle.innerHTML = '<i class="bi bi-moon"></i>';
+                    }
                 });
             }
         });

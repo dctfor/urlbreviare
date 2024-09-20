@@ -1,20 +1,65 @@
+# pyproject.toml
+
 [tool.black]
 line-length = 120
-target-version = ['py311']  # Reemplaza con tu versión de Python
+target-version = ['py311']  # Replace with your Python version, e.g., 'py38', 'py310'
 include = '\.pyi?$'
 exclude = '''
 /(
     \.git
   | \.venv
+  | [Ee]nv
+  | [Vv]env
+  | ENV
+  | env
+  | ENV
+  | VENV
+  | envs
+  | venvs
   | \.mypy_cache
   | \.pytest_cache
   | \.tox
+  | \.idea
+  | \.vscode
   | __pycache__
+  | build
+  | dist
   | migrations
+  | static
+  | templates
   | tests
+  | docs
+  | examples
+  | node_modules
 )/
 '''
 
 [tool.isort]
 profile = "black"
 line_length = 120
+include_trailing_comma = true
+multi_line_output = 3
+skip = ["env", "venv", ".venv", "migrations", "static", "templates"]
+
+[tool.flake8]
+max-line-length = 120
+extend-ignore = [
+    "E203",  # Whitespace before ':', conflicts with Black
+    "W503",  # Line break before binary operator, conflicts with Black
+]
+exclude = [
+    ".git",
+    "__pycache__",
+    "env",
+    "venv",
+    ".venv",
+    "build",
+    "dist",
+    "migrations",
+    "static",
+    "templates",
+]
+
+[tool.pylint]
+max-line-length = 120
+ignore = ["env", "venv", ".venv", "migrations", "static", "templates"]
