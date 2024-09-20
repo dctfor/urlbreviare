@@ -1,26 +1,28 @@
 # GCP_Flask_Firebase
 
-This is a simple API CRUD in FLASK + Firebase Demo protecting the APIs with JWT
+This is a simple API CRUD in FLASK + Firebase Demo
 
 ## The highlights are:
     - It was a quickly developed project/setup for showing base skills for developing
     - Currently only http errors such as 404 & 500 are handled with custom pages renders for this server
-    - This repo is connected with a Trigger in Google Cloud Build for automatic deploy after pushing changes  and deployed in Google Run
+    - This repo used to be connected with a Trigger in Google Cloud Build for automatic deploy after pushing changes and deployed in Google Run
     - Has the simple yet useful added logging configuration ofr showing logs in Google Cloud Run/Log Explorer
     - Google secrets are being used + Env Vars for keeping safe some secrets for connecting with Firebase
-    - The interface is in another project using VUE
+    - The interface was intended to be in another project using VUE, but for improving this current project is included
+    - The project implements different Flask plugins as Talisman, Login and Limiter
+    - The generated short URL comes now with a QR created with pillow
 
-## Downside
-    - Currently this lacks of any proper UI for managing the CRUD for a common final user here, it's mostly likely for a developer with min experience with Restful APIs
+## Somehow a downside
+    Currently I'm not implementing JWT as currently for being such a small project, this can work using Flask-login + CSRF Tokens
+    No need for a more complex implementation for this demo.
 
 ### TODO
     - Add example code for using Sendgrid by Twilio for validating emails validating format and validating 'A' and 'MX' DNS records
     - Add unittesting with pytest into the yaml file
     - Add Telegram realtime notifications
     - Add examples for APIs usage / flask-apispec other than the site-map
-    - Add SSO/OAuth capabilities [WIP]
-    - and other stuff
+    - Add SSO/OAuth capabilities
 
-## Get hired
+## Created this demo for getting hired
 
-Last Update 2022 Aug 24
+Last Update 2024 Sep 19
